@@ -1,0 +1,33 @@
+{% for obj in object_list %}
+<table style="margin-left: 8%; margin-top: 10px;">
+    <tr>
+        <td> {% include 'product/ProductCard.html' %} </td>
+        <!-- <td style="width: 0.5px;"></td> -->
+    </tr>
+</table>
+{% endfor %}
+
+{% if is_paginated %}
+<center>
+
+  <ul style="margin-left:725px;color:#cba6a6" class="pagination">
+    {% if page_obj.has_previous %}
+      <li><a style="color:#f2e9e2"href="?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li style="color:#cba6a6;" class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in paginator.page_range %}
+      {% if page_obj.number == i %}
+        <li style="color:#f2e9e2;" class="active"><span style="background-color:#cba6a6; border-color:#cba6a6" >{{ i }} <span style="color:#cba6a6;" class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a style="background-color:#f2e9e2; color:white"href="?q={{ request.GET.q }}&page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next %}
+      <li><a style="color:#f2e9e2;"href="?q={{ request.GET.q }}&page={{ page_obj.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li style="color:#f2e9e2;" class="disabled"><span style="color:#f2e9e2;">&raquo;</span></li>
+    {% endif %}
+  </ul>
+  </center>
+{% endif %}

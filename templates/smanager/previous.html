@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Previous Orders</title>
+
+    <!-- Bootstrap CDN-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <!-- Font Awesome CDN-->
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/23412c6a8d.js"></script>
+
+    <!--Custom Style Sheet-->
+    <link rel="stylesheet" href="{% static 'prev_orders/header.css' %}">
+
+    <script type="text/javascript">
+
+        function toggle_visibility(id) {
+            var e = document.getElementById(id);
+            if(e.style.display == 'block')
+                e.style.display = 'none';
+            else
+                e.style.display = 'block';
+        }
+
+    </script>
+
+
+    <!-- Bootstrap CDN-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <!-- Font Awesome CDN-->
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/23412c6a8d.js"></script>
+
+    <!--Custom Style Sheet-->
+    <link rel="stylesheet" href="{% static 'prev_orders/footer.css' %}">
+
+    <link rel="stylesheet" href="{% static 'prev_orders/view_invoices.css' %}">
+</head>
+<body>
+
+
+  <header>
+      <div class="container-fluid">
+          <div class="row header-row">
+              <div class="col-md-4 col-12 text-left">
+                  <h2 onclick="location.href='{% url 'index' %}';"  style="cursor:pointer;" class="my-md-3 site-title">nuance</h2>
+              </div>
+
+              <div class="col-md-4 col-12 offset-md-4  head-rightContent">
+                  <div  class= "right-col">
+                      <ul class=icons>
+
+                          <!-- <li class="profil">
+                              <i class="far fa-user fa-lg"></i>
+                          </li> -->
+
+
+                          {% if user.is_authenticated %}
+                          <li style="margin-left: 200px;" class="profil" tabindex="0">
+
+                            <div class="user_section" id="user">
+                              <a href="">
+                              <i class="far fa-user fa-lg"></i>
+                            </a>
+
+                            </div>
+                            <div class="user_container">
+                              <div style="z-index: 9999;"class="user_info col-4 col-md-4 offset-md-">
+
+                                <h3>{{ user.username }}</h3>
+
+                                <!-- <p><a href="#">Your Account</a></p> -->
+                                <!-- <p><a href="#">Addresses</a></p> -->
+                                <p><a href="{% url 'prev_orders_smanager' %}">Previous Orders</a></p>
+                                <p><a href="{% url 'logout' %}">Logout, {{ user.username }}</a></p>
+                              {% else %}
+                              <li class="profil">
+                                <div class="user_section" id="user">
+                                  <i onclick="location.href='{% url 'user_login' %}';"  style="cursor:pointer;" class="far fa-user fa-lg"></i>
+                                  </div>
+                              </li>
+
+
+                            </div>
+                          </div>
+
+
+
+                        </li>
+                        {% endif %}
+                      </ul>
+                  </div>
+
+                  <style>
+                  /* The Modal (background) */
+                  .modal {
+                  display: none; /* Hidden by default */
+                  position: fixed; /* Stay in place */
+                  /* Sit on top */
+                  padding-top: 300px; /* Location of the box */
+                  padding-left: 150px;
+                  top: 0;
+                  width: 100%; /* Full width */
+                  height: 100%; /* Full height */
+                  overflow: auto; /* Enable scroll if needed */
+                  background-color: rgb(0,0,0); /* Fallback color */
+                  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+                  }
+
+                  /* Modal Content */
+                  .modal-content {
+                  background-color: #fefefe;
+                  margin: auto;
+                  padding: 20px;
+                  border: 1px solid #888;
+                  width: 30%;
+                  }
+
+                  /* The Close Button */
+                  .close {
+                  color: #aaaaaa;
+                  float: right;
+                  font-size: 28px;
+                  font-weight: bold;
+                  }
+
+                  .close:hover,
+                  .close:focus {
+                  color: #000;
+                  text-decoration: none;
+                  cursor: pointer;
+                  }
+                  </style>
+                  <!-- Trigger/Open The Modal -->
+                  <button class="myBtn" id="myBtn">Set Discount</button>
+                  <div id="myModal" class="modal">
+
+                      <!-- Modal content -->
+                      <div class="modal-content">
+                          <span class="close">&times;</span>
+                          <form id="discount_form" method="POST" class=newsletter-form>
+                              {% csrf_token %}
+                              <label style="font-size: 15px;">Discount for selected items:</label>
+                              <input name="discount_value" type="number" min="1" max="99">
+                              <center>
+                                  <input type="submit" class="submit-btn" value="Save" style="margin-top: 10px;">
+                              </center>
+                          </form>
+                      </div>
+                  </div>
+
+                  <script>
+                      // Get the modal
+                      var modal = document.getElementById("myModal");
+
+                      // Get the button that opens the modal
+                      var btn = document.getElementById("myBtn");
+
+                      // Get the <span> element that closes the modal
+                      var span = document.getElementsByClassName("close")[0];
+
+                      // When the user clicks the button, open the modal
+                      btn.onclick = function() {
+                          modal.style.display = "block";
+                      }
+
+                      // When the user clicks on <span> (x), close the modal
+                      span.onclick = function() {
+                          modal.style.display = "none";
+                      }
+
+                      // When the user clicks anywhere outside of the modal, close it
+                      window.onclick = function(event) {
+                          if (event.target == modal) {
+                              modal.style.display = "none";
+                          }
+                      }
+                  </script>
+
+                  <div class="btn-group">
+                      <button class="btn dropdown-toggle my-md-4 my-2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">USD</button>
+                      <div class="dropdown-menu">
+                          <a href="#" class="dropdown-item">EUR</a>
+                          <a href="#" class="dropdown-item">TL</a>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </header>
+
+
+
+<div id="shopping-popup" class="bg-modal wrapper">
+    <div class="container modal-content">
+        <div class="closing">
+            <a href="javascript:void(0)" onclick="toggle_visibility('shopping-popup');">
+                <i class="fas fa-times"></i>
+            </a>
+        </div>
+        <h3>SHOPPING CART</h3>
+
+        <div class="row item-row">
+            <div class="buttons">
+                <i class="fas fa-times"></i>
+            </div>
+
+            <div class="productimage">
+                <img class="productimage" src="./images/Banner/Cilt Bakımı/face tonic02.jpg" alt="" />
+            </div>
+
+            <div class="description">
+                <span>Common Projects</span></br>
+                <span>Bball High</span></br>
+
+            </div>
+
+            <div class="quantity">
+                <div class="row q-row">
+                    <i class="fas fa-plus"></i>
+                    <p class=quant>1</p>
+                    <i class="fas fa-minus"></i>
+
+                </div>
+            </div>
+
+            <div class="price">
+                <p class="total-price">$549</p>
+            </div>
+        </div>
+        <hr style="width:400px; margin: auto;"></hr>
+        <div class="row item-row">
+            <div class="buttons">
+                <i class="fas fa-times"></i>
+            </div>
+
+            <div class="productimage">
+                <img class="productimage" src="./images/Banner/Cilt Bakımı/face tonic02.jpg" alt="" />
+            </div>
+
+            <div class="description">
+                <span>Common Projects</span></br>
+                <span>Bball High</span></br>
+
+            </div>
+
+            <div class="quantity">
+                <div class="row q-row">
+                    <i class="fas fa-plus"></i>
+                    <p class=quant>1</p>
+                    <i class="fas fa-minus"></i>
+
+                </div>
+            </div>
+
+            <div class="price">
+                <p class="total-price">$549</p>
+            </div>
+        </div>
+
+        <h5>Total Price</h5>
+        <h6>$549</h6>
+
+        <!--
+        <div class="empty-card">
+          <p>YOUR SHOPPING CART IS EMPTY</p>
+        </div>
+        -->
+        <i class="fas fa-shopping-cart"></i>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="jquery.js"></script>
+<script src="./js/header.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+
+<font style="font-family: var(--opensans-condensed); font-size: 20px;">
+
+    <div class="container" style="width: auto; height: auto; margin-top: 50px;">
+
+        <h2 style="margin-left: 110px;">Previous Orders</h2>
+
+        <table style="margin-bottom: 120px;">
+            <thead>
+            <tr>
+                <th scope="col">ORDER ID</th>
+                <th scope="col">DATE</th>
+                <th scope="col">RECIPIENT</th>
+                <th scope="col">TOTAL</th>
+                <th scope="col">DELIVERY STATUS</th>
+                <th scope="col">INVOICE</th>
+
+            </tr>
+            </thead>
+            <tbody>
+              {% for ord in order %}
+                  {% if ord.shipadr %}
+                  <tr>
+                      <td data-label="ORDER ID">{{ ord.order_id }}</td>
+                      <td data-label="DATE">{{ ord.timestamp }}</td>
+                      <td data-label="RECIPIENT">{{ ord.delivery_profile.user }}</td>
+                      <td data-label="TOTAL">{{ ord.total }}</td>
+
+
+<form class="" action="{% url 'change_status' ord.order_id  %}" method="post">  {% csrf_token %}
+
+
+                      <td data-label="DELIVERY STATUS">
+                                            {% if ord.status == 'pending' or ord.status == 'Pending' %}
+                                             <select name="changestat" id="changestat">
+                                              <option value="Pending">Pending</option>
+                                              <option value="Preparing">Preparing</option>
+                                              <option value="Shipped">Shipped</option>
+                                              <option value="Received">Received</option>
+                                            </select><button type="submit" name="change_stat">Change Status</button></td>
+                                            {% elif ord.status == 'preparing' or ord.status == 'Preparing'%}
+                                            <select name="changestat" id="changestat">
+                                            <option value="Preparing">Preparing</option>
+                                            <option value="Pending">Pending</option>
+                                            <option value="Shipped">Shipped</option>
+                                            <option value="Received">Received</option>
+                                            </select><button type="submit" name="change_stat">Change Status</button></td>
+                                            {% elif ord.status == 'shipped' or ord.status == 'Shipped' %}
+                                            <select name="changestat" id="changestat">
+                                            <option value="Shipped">Shipped</option>
+                                            <option value="Pending">Pending</option>
+                                            <option value="Preparing">Preparing</option>
+                                            <option value="Received">Received</option>
+                                            </select><button type="submit" name="change_stat">Change Status</button></td>
+                                            {% else %}
+                                            <select name="changestat" id="changestat">
+                                            <option value="Received">Received</option>
+                                            <option value="Pending">Pending</option>
+                                            <option value="Preparing">Preparing</option>
+                                            <option value="Shipped">Shipped</option>
+                                            </select><button type="submit" name="change_stat">Change Status</button></td>
+                                            {% endif %}
+
+</form>
+
+
+                      <td data-label="INVOICE"><a href="{% url 'invoice_order' ord.order_id %}">view</a></td>
+                  </tr>
+
+                  {% else %}
+
+                {% endif %}
+            {% endfor %}
+
+
+            </tbody>
+        </table>
+    </div>
+    <font>
+
+
+
+        <footer>
+            <div class="footer-container">
+                <div class="left-col">
+                    <h2 class="my-md-3 site-title">nuance</h2>
+                    <div class="social-media">
+                        <a href="#"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+                        <a href="#"><i class="fab fa-twitter" aria-hidden="true"></i></a>
+                        <a href="#"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+                        <a href="#"><i class="fab fa-youtube" aria-hidden="true"></i></a>
+                    </div>
+                    <p class="rights-text">© All rights reserved</p>
+                </div>
+                <div class="right-col">
+                    <h1>Join Our Newsletter</h1>
+                    <div class="border"></div>
+                    <p>Enter Your Email to get our news and updates</p>
+                    <form action="" class=newsletter-form>
+                        <input type="text" class="txtb" placeholder="Enter Your Email">
+                        <input type="submit" class="submit-btn" value="submit">
+                    </form>
+                </div>
+            </div>
+        </footer>
+
+
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+            <script src="jquery.js"></script>
+            <script src="{% static 'header_footer/last_header.js' %}"></script>
+            <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+            <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+
+
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossori
+
+</body>
+</html>
